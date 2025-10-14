@@ -1,59 +1,31 @@
-// ===================================================
-// ★★★ 設定エリア ★★★
-// あなたのfirebaseConfigのコードをここに貼り付けてください
-// ===================================================
-const firebaseConfig = {
-  apiKey: "AIzaSyCyZwqTMZ6GUccNDDB9avOpBxIbRxMWJtw",
-  authDomain: "obs-ticker-system.firebaseapp.com",
-  databaseURL: "https://obs-ticker-system-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "obs-ticker-system",
-  storageBucket: "obs-ticker-system.appspot.com",
-  messagingSenderId: "597498199333",
-  appId: "1:597498199333:web:fa6382b92ec4b2e29b2ecc"
-};
-// ===================================================
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBSティッカー コントロールパネル</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>OBSティッカー コントロールパネル</h1>
+        <div class="form-group">
+            <label for="label">ヘッダー (ラベル)</label>
+            <input type="text" id="label" placeholder="例: NEWS">
+        </div>
+        <div class="form-group">
+            <label for="items">流す文字 (1行に1項目)</label>
+            <textarea id="items" rows="10" placeholder="ここに流したい文字を改行区切りで入力..."></textarea>
+        </div>
+        <button id="updateButton">更新する</button>
+        <p id="status"></p>
+    </div>
 
-// Firebaseを初期化
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
-const tickerDataRef = database.ref('tickerData');
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
 
-// HTML要素を取得
-const labelInput = document.getElementById('label');
-const itemsTextarea = document.getElementById('items');
-const updateButton = document.getElementById('updateButton');
-const statusP = document.getElementById('status');
-
-// データベースから現在のデータを読み込んでフォームに表示
-tickerDataRef.on('value', (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-        labelInput.value = data.label || '';
-        itemsTextarea.value = data.items ? data.items.join('\n') : '';
-    }
-});
-
-// 更新ボタンが押されたときの処理
-updateButton.addEventListener('click', () => {
-    const label = labelInput.value;
-    const items = itemsTextarea.value.split('\n').filter(line => line.trim() !== '');
-
-    updateButton.disabled = true;
-    updateButton.textContent = '更新中...';
-
-    tickerDataRef.set({
-        label: label,
-        items: items,
-        updatedAt: new Date().toISOString()
-    }).then(() => {
-        statusP.textContent = '✅ 更新に成功しました！';
-        statusP.style.color = '#28a745';
-    }).catch((error) => {
-        statusP.textContent = `❌ 更新に失敗しました: ${error.message}`;
-        statusP.style.color = '#dc3545';
-    }).finally(() => {
-        updateButton.disabled = false;
-        updateButton.textContent = '更新する';
-        setTimeout(() => { statusP.textContent = ''; }, 3000);
-    });
-});
+    <!-- メインのスクリプト -->
+    <script src="control.js"></script>
+</body>
+</html>

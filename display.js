@@ -1,6 +1,6 @@
 // ===================================================
 // ★★★ 設定エリア ★★★
-// control.jsと同じfirebaseConfigのコードをここに貼り付けてください
+// あなたのFirebaseプロジェクトの接続情報
 // ===================================================
 const firebaseConfig = {
   apiKey: "AIzaSyCyZwqTMZ6GUccNDDB9avOpBxIbRxMWJtw",

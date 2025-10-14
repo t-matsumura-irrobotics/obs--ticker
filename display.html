@@ -5,17 +5,97 @@
     <title>OBS Ticker Display</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; font-family: 'Noto Sans JP', sans-serif; background-color: rgba(0, 0, 0, 0); overflow: hidden; }
-        .ticker-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 50px; background-color: rgba(26, 26, 26, 0.9); display: flex; align-items: center; color: #FFFFFF; font-size: 24px; font-weight: 700; box-sizing: border-box; }
-        .ticker-label { background-color: #00BFFF; padding: 0 20px; height: 100%; display: flex; align-items: center; }
-        .ticker-wrap { flex-grow: 1; overflow: hidden; margin-left: 20px; }
-        .ticker-move { display: inline-block; white-space: nowrap; animation: scroll-left 30s linear infinite; padding-left: 100%; }
-        .ticker-item { margin-right: 80px; }
-        @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-        .live-clock { padding: 0 20px; height: 100%; display: flex; align-items: center; background-color: rgba(0, 0, 0, 0.3); }
-        .live-label { color: #00BFFF; margin-right: 10px; }
+        /* --- 全体の基本設定 --- */
+        body { 
+            margin: 0; 
+            font-family: 'Noto Sans JP', sans-serif; 
+            background-color: rgba(0, 0, 0, 0); 
+            overflow: hidden; 
+        }
+
+        /* --- ティッカー全体のコンテナ【縦幅を約3倍に】 --- */
+        .ticker-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 90px; /* 縦幅を大きく */
+            background-color: rgba(10, 15, 25, 0.85); /* 深いネイビーブルーの背景 */
+            backdrop-filter: blur(10px); /* すりガラス効果 */
+            border-top: 3px solid #00AFFF; /* 上部にアクセントライン */
+            display: flex;
+            align-items: stretch; /* 各要素の高さをコンテナに合わせる */
+            color: #FFFFFF;
+            font-weight: 700;
+            box-sizing: border-box;
+        }
+
+        /* --- ヘッダー(ラベル)部分【横幅を約8倍に】 --- */
+        .ticker-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 320px; /* 横幅を大幅に拡大 */
+            background-color: #00AFFF;
+            color: #0d1117; /* ラベルの文字色をダークに */
+            font-size: 36px;
+            font-weight: 900; /* 最も太いフォント */
+            clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%); /* 斜めの切り口でデザイン性を向上 */
+            padding-right: 30px; /* 斜め部分の余白調整 */
+        }
+
+        /* --- 流し文字のラッパー --- */
+        .ticker-wrap {
+            flex-grow: 1;
+            overflow: hidden;
+            display: flex;
+            align-items: center; /* 文字を垂直中央に配置 */
+            margin-left: 40px;
+        }
+
+        /* --- 流し文字本体【速度を70%に】 --- */
+        .ticker-move {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll-left 45s linear infinite; /* 30s / 0.7 ≒ 42.8s。キリ良く45sに設定 */
+            padding-left: 100%; /* アニメーションの始点を画面外に */
+        }
+
+        .ticker-item {
+            margin-right: 120px; /* 文字間の余白を拡大 */
+            font-size: 42px; /* フォントサイズを大幅アップ */
+            font-weight: 500;
+        }
+        
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* --- 時報部分【秒を非表示に】 --- */
+        .live-clock {
+            display: flex;
+            flex-direction: column; /* 縦並びに変更 */
+            align-items: center;
+            justify-content: center;
+            background-color: #0d1117;
+            padding: 0 30px;
+            border-left: 2px solid #00AFFF;
+        }
+
+        .live-label {
+            font-size: 18px;
+            font-weight: 700;
+            color: #00AFFF;
+        }
+        
+        #clock {
+            font-size: 38px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
     </style>
 </head>
 <body>
@@ -24,7 +104,7 @@
         <div class="ticker-wrap"><div class="ticker-move" id="ticker-move"></div></div>
         <div class="live-clock">
             <span class="live-label">LIVE</span>
-            <span id="clock">00:00:00</span>
+            <span id="clock">00:00</span>
         </div>
     </div>
     

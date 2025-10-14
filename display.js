@@ -1,6 +1,5 @@
 // ===================================================
 // ★★★ 設定エリア ★★★
-// あなたのFirebaseプロジェクトの接続情報
 // ===================================================
 const firebaseConfig = {
   apiKey: "AIzaSyCyZwqTMZ6GUccNDDB9avOpBxIbRxMWJtw",
@@ -13,44 +12,65 @@ const firebaseConfig = {
 };
 // ===================================================
 
-// Firebaseを初期化
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 const tickerDataRef = database.ref('tickerData');
 
-// HTML要素を取得
-const labelDiv = document.getElementById('ticker-label-text');
-const tickerMoveDiv = document.getElementById('ticker-move');
+const labelDiv = document.getElementById('ticker-label');
+const wrapDiv = document.getElementById('ticker-wrap');
 const clockSpan = document.getElementById('clock');
 
-// データベースの変更をリアルタイムで監視する
+// 前日比の色を決定するヘルパー関数
+function getChangeClass(changeValue) {
+    const str = String(changeValue);
+    if (str.startsWith('+')) return 'change-plus';
+    if (str.startsWith('-') || str.startsWith('▼') || str.startsWith('▲')) return 'change-minus';
+    return ''; // プラマイなしの場合
+}
+// 記号を統一するヘルパー関数
+function formatChangeValue(changeValue) {
+    const str = String(changeValue);
+    if (str.startsWith('+')) return `▲${str.substring(1)}`;
+    if (str.startsWith('-')) return `▼${str.substring(1)}`;
+    if (str.startsWith('▲') || str.startsWith('▼')) return str;
+    if (parseFloat(str) > 0) return `▲${str}`;
+    if (parseFloat(str) < 0) return `▼${Math.abs(parseFloat(str))}`;
+    return str;
+}
+
+
 tickerDataRef.on('value', (snapshot) => {
     const data = snapshot.val();
-    
     if (data) {
-        labelDiv.textContent = data.label || 'INFO';
-        const items = data.items || ['...'];
-        if (items.length > 0) {
-            const newsHtml = items.map(item => `<span class="ticker-item">${item}</span>`).join('');
-            tickerMoveDiv.innerHTML = newsHtml.repeat(2);
+        labelDiv.textContent = data.label || '主要株価';
+        
+        if (data.stockItems && data.stockItems.length > 0) {
+            const itemsHtml = data.stockItems.map(item => {
+                const changeClass = getChangeClass(item.change);
+                const formattedChange = formatChangeValue(item.change);
+                return `
+                <div class="stock-item">
+                    <span class="stock-name">${item.name}</span>
+                    <span class="stock-code">${item.code}</span>
+                    <span class="stock-price">${item.price}</span>
+                    <span class="stock-change ${changeClass}">${formattedChange}</span>
+                </div>
+            `}).join('');
+            wrapDiv.innerHTML = itemsHtml;
         } else {
-            tickerMoveDiv.innerHTML = `<span class="ticker-item">表示する情報がありません</span>`;
+            wrapDiv.innerHTML = '';
         }
     } else {
         labelDiv.textContent = '待機中';
-        tickerMoveDiv.innerHTML = `<span class="ticker-item">コントロールパネルからデータを更新してください...</span>`;
     }
 });
 
-// 時計を更新する関数【秒の表示を削除】
 function updateClock() {
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
-    // 秒（seconds）の取得と表示処理を削除
     clockSpan.textContent = `${hours}:${minutes}`;
 }
 
-// 1秒ごとに時計を更新
 setInterval(updateClock, 1000);
-updateClock(); // 初回実行
+updateClock();

@@ -1,6 +1,5 @@
 // ===================================================
 // ★★★ 設定エリア ★★★
-// あなたのFirebaseプロジェクトの接続情報
 // ===================================================
 const firebaseConfig = {
   apiKey: "AIzaSyCyZwqTMZ6GUccNDDB9avOpBxIbRxMWJtw",
@@ -13,37 +12,50 @@ const firebaseConfig = {
 };
 // ===================================================
 
-// Firebaseを初期化
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 const tickerDataRef = database.ref('tickerData');
 
-// HTML要素を取得
 const labelInput = document.getElementById('label');
 const itemsTextarea = document.getElementById('items');
 const updateButton = document.getElementById('updateButton');
 const statusP = document.getElementById('status');
 
-// データベースから現在のデータを読み込んでフォームに表示
+// データベースから読み込み、テキストエリアに整形して表示
 tickerDataRef.on('value', (snapshot) => {
     const data = snapshot.val();
     if (data) {
         labelInput.value = data.label || '';
-        itemsTextarea.value = data.items ? data.items.join('\n') : '';
+        if (data.stockItems) {
+            const text = data.stockItems.map(item => `${item.name},${item.code},${item.price},${item.change}`).join('\n');
+            itemsTextarea.value = text;
+        } else {
+            itemsTextarea.value = '';
+        }
     }
 });
 
-// 更新ボタンが押されたときの処理
+// 更新ボタンの処理
 updateButton.addEventListener('click', () => {
     const label = labelInput.value;
-    const items = itemsTextarea.value.split('\n').filter(line => line.trim() !== '');
+    const lines = itemsTextarea.value.split('\n').filter(line => line.trim() !== '');
+
+    const stockItems = lines.map(line => {
+        const parts = line.split(',');
+        return {
+            name: parts[0] || '',
+            code: parts[1] || '',
+            price: parts[2] || '-',
+            change: parts[3] || '-'
+        };
+    });
 
     updateButton.disabled = true;
     updateButton.textContent = '更新中...';
 
     tickerDataRef.set({
         label: label,
-        items: items,
+        stockItems: stockItems, // 新しい株式データ構造
         updatedAt: new Date().toISOString()
     }).then(() => {
         statusP.textContent = '✅ 更新に成功しました！';

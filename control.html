@@ -10,12 +10,12 @@
     <div class="container">
         <h1>情報ティッカー コントロールパネル</h1>
         <div class="form-group">
-            <label for="label">ヘッダー (例: MARKET NEWS)</label>
-            <input type="text" id="label" placeholder="MARKET NEWS">
+            <label for="labelLeft">左のテキスト (例: 明日の天気)</label>
+            <input type="text" id="labelLeft" placeholder="明日の天気">
         </div>
         <div class="form-group">
-            <label for="items">流す文字 (改行は半角スペース3つに変換されます)</label>
-            <textarea id="items" rows="12" placeholder="ここに流したい文字を入力してください。&#10;項目を改行で区切ると、間にスペースが入ります。&#10;&#10;【入力例】&#10;日経平均 38,550.25 ▼250.11&#10;トヨタ自動車(7203) 3,582 ▲56&#10;ドル円 157.25-28"></textarea>
+            <label for="scrollingText">中央の流し文字</label>
+            <textarea id="scrollingText" rows="10" placeholder="ここに流したい文字を入力してください。&#10;改行は半角スペース3つに変換されます。"></textarea>
         </div>
         <button id="updateButton">更新する</button>
         <p id="status"></p>

@@ -1,10 +1,10 @@
 // ===================================================
-// ★★★ 設定エリア ★★★
+// ★★★ 設定エリア (接続問題を修正済み) ★★★
 // ===================================================
 const firebaseConfig = {
   apiKey: "AIzaSyCyZwqTMZ6GUccNDDB9avOpBxIbRxMWJtw",
   authDomain: "obs-ticker-system.firebaseapp.com",
-  databaseURL: "https://obs-ticker-system-default-rtdb.asia-southeast1.firebasedabase.app",
+  databaseURL: "https://obs-ticker-system-default-rtdb.asia-southeast1.firebasedatabase.app", // ★★★ タイプミスを修正しました ★★★
   projectId: "obs-ticker-system",
   storageBucket: "obs-ticker-system.appspot.com",
   messagingSenderId: "597498199333",
@@ -16,31 +16,30 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 const tickerDataRef = database.ref('tickerData');
 
-const labelInput = document.getElementById('label');
-const itemsTextarea = document.getElementById('items');
+const labelLeftInput = document.getElementById('labelLeft');
+const scrollingTextInput = document.getElementById('scrollingText');
 const updateButton = document.getElementById('updateButton');
 const statusP = document.getElementById('status');
 
-// データベースから読み込み、テキストエリアに表示
+// データベースから読み込み、フォームに表示
 tickerDataRef.on('value', (snapshot) => {
     const data = snapshot.val();
     if (data) {
-        labelInput.value = data.label || '';
-        itemsTextarea.value = data.scrollingText || '';
+        labelLeftInput.value = data.labelLeft || '';
+        scrollingTextInput.value = data.scrollingText ? data.scrollingText.replace(/   /g, '\n') : '';
     }
 });
 
 // 更新ボタンの処理
 updateButton.addEventListener('click', () => {
-    const label = labelInput.value;
-    // 改行を半角スペース3つに変換して、1行のテキストにする
-    const scrollingText = itemsTextarea.value.replace(/\n/g, '   ');
+    const labelLeft = labelLeftInput.value;
+    const scrollingText = scrollingTextInput.value.replace(/\n/g, '   ');
 
     updateButton.disabled = true;
     updateButton.textContent = '更新中...';
 
     tickerDataRef.set({
-        label: label,
+        labelLeft: labelLeft,
         scrollingText: scrollingText,
         updatedAt: new Date().toISOString()
     }).then(() => {

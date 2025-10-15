@@ -2,80 +2,82 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Scrolling Ticker Display</title>
-    <!-- LINE Seed JPフォントを読み込み -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/line/fonts/line-seed/line-seed-jp.css">
+    <title>Ticker Display</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
-            font-family: 'LINE Seed JP', sans-serif;
+            font-family: 'Noto Sans JP', sans-serif;
             background-color: rgba(0, 0, 0, 0);
             overflow: hidden;
         }
         .ticker-container {
             position: absolute;
-            bottom: 50px;
+            bottom: 30px;
             left: 0;
             width: 1920px;
-            height: 130px; /* ★全体の太さを2倍に */
+            height: 70px;
             display: flex;
             align-items: stretch;
-            font-weight: 700;
+            font-weight: 900; /* 全体的に太字に */
         }
-        .ticker-label {
+        .left-label {
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #1a71d4;
+            background-color: #2756a5;
             color: white;
-            font-size: 60px; /* ★フォントサイズ調整 */
-            padding: 0 80px;
+            font-size: 32px;
+            padding: 0 40px;
             clip-path: polygon(0 0, 100% 0, 93% 100%, 0% 100%);
             flex-shrink: 0;
         }
-        .ticker-wrap {
+        .center-wrap {
             flex-grow: 1;
-            background-color: #f0f2f5;
-            display: flex; /* アニメーション制御のためflexを使用 */
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            display: flex;
             align-items: center;
             overflow: hidden;
             white-space: nowrap;
         }
-        .live-clock {
+        .right-clock {
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #1a71d4;
+            background-color: #2756a5;
             color: white;
-            font-size: 60px; /* ★フォントサイズ調整 */
-            padding: 0 60px 0 100px;
+            font-size: 36px;
+            padding: 0 30px 0 50px;
             clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
             flex-shrink: 0;
         }
-        .live-clock .live-label {
-            font-size: 32px; /* ★フォントサイズ調整 */
-            font-weight: 400;
-            margin-right: 20px;
+        .right-clock .live-label {
+            font-size: 20px;
+            font-weight: 700;
+            margin-right: 15px;
             align-self: flex-start;
-            margin-top: 20px;
+            margin-top: 12px;
         }
         
-        /* 流れる文字のコンテナ */
         .scrolling-text {
-            color: #222;
-            font-size: 72px; /* ★フォントサイズ調整 */
+            color: #333;
+            font-size: 42px;
             font-weight: 700;
-            /* JavaScriptによってアニメーションが適用される */
+            padding-left: 20px;
+            /* JavaScriptによってアニメーションが適用されます */
         }
     </style>
 </head>
 <body>
     <div class="ticker-container">
-        <div class="ticker-label" id="ticker-label">...</div>
-        <div class="ticker-wrap" id="ticker-wrap">
+        <div class="left-label" id="left-label">...</div>
+        <div class="center-wrap" id="center-wrap">
             <!-- JavaScriptがここに流れる文字を挿入します -->
         </div>
-        <div class="live-clock">
+        <div class="right-clock">
             <span class="live-label">LIVE</span>
             <span id="clock">00:00</span>
         </div>

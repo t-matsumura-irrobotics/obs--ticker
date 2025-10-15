@@ -1,69 +1,66 @@
 // ===================================================
-// ★★★ 設定エリア ★★★
+// ★★★ 設定エリア (接続問題を修正済み) ★★★
 // ===================================================
 const firebaseConfig = {
   apiKey: "AIzaSyCyZwqTMZ6GUccNDDB9avOpBxIbRxMWJtw",
   authDomain: "obs-ticker-system.firebaseapp.com",
-  databaseURL: "https://obs-ticker-system-default-rtdb.asia-southeast1.firebasedabase.app",
+  databaseURL: "https://obs-ticker-system-default-rtdb.asia-southeast1.firebasedatabase.app", // ★★★ タイプミスを修正しました ★★★
   projectId: "obs-ticker-system",
   storageBucket: "obs-ticker-system.appspot.com",
   messagingSenderId: "597498199333",
   appId: "1:597498199333:web:fa6382b92ec4b2e29b2ecc"
 };
 // スクロール速度 (ピクセル/秒)
-const SCROLL_SPEED_PPS = 150;
+const SCROLL_SPEED_PPS = 120;
 // ===================================================
 
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 const tickerDataRef = database.ref('tickerData');
 
-const labelDiv = document.getElementById('ticker-label');
-const wrapDiv = document.getElementById('ticker-wrap');
+const leftLabelDiv = document.getElementById('left-label');
+const centerWrapDiv = document.getElementById('center-wrap');
 const clockSpan = document.getElementById('clock');
 let currentAnimation = null;
 
-// テキストを受け取り、スクロールアニメーションを開始する関数
 function startScrolling(text) {
-    // 既存のアニメーションがあれば停止
     if (currentAnimation) {
         currentAnimation.cancel();
     }
-    
-    // 表示エリアとテキスト要素を作成
-    wrapDiv.innerHTML = ''; // 中身をクリア
+    centerWrapDiv.innerHTML = '';
     const textElement = document.createElement('div');
     textElement.className = 'scrolling-text';
-    textElement.textContent = text + "   ***   "; // 末尾に区切り文字を追加
-    wrapDiv.appendChild(textElement);
+    textElement.textContent = text;
+    centerWrapDiv.appendChild(textElement);
     
-    // テキストと表示エリアの幅を取得
     const textWidth = textElement.offsetWidth;
-    const wrapWidth = wrapDiv.offsetWidth;
+    const wrapWidth = centerWrapDiv.offsetWidth;
     
-    // アニメーション時間を計算 (距離 ÷ 速度)
-    // 距離 = 表示エリアの幅 + テキストの幅
+    if (textWidth < wrapWidth) {
+        // 文字がエリアより短い場合はアニメーションしない
+        textElement.style.transform = `translateX(0px)`;
+        return;
+    }
+    
     const durationSeconds = (wrapWidth + textWidth) / SCROLL_SPEED_PPS;
 
-    // Web Animations APIを使用してアニメーションを適用
     currentAnimation = textElement.animate([
-        { transform: `translateX(${wrapWidth}px)` }, // 開始位置 (右端の外側)
-        { transform: `translateX(-${textWidth}px)` }  // 終了位置 (左端の外側)
+        { transform: `translateX(${wrapWidth}px)` },
+        { transform: `translateX(-${textWidth}px)` }
     ], {
-        duration: durationSeconds * 1000, // ミリ秒に変換
-        iterations: Infinity, // 無限に繰り返す
-        easing: 'linear' // 一定速度
+        duration: durationSeconds * 1000,
+        iterations: Infinity,
+        easing: 'linear'
     });
 }
-
 
 tickerDataRef.on('value', (snapshot) => {
     const data = snapshot.val();
     if (data) {
-        labelDiv.textContent = data.label || 'MARKET NEWS';
+        leftLabelDiv.textContent = data.labelLeft || 'INFO';
         startScrolling(data.scrollingText || 'コントロールパネルから情報を更新してください...');
     } else {
-        labelDiv.textContent = '待機中';
+        leftLabelDiv.textContent = '待機中';
         startScrolling('コントロールパネルから情報を更新してください...');
     }
 });

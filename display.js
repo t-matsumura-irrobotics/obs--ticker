@@ -1,18 +1,14 @@
-// ===================================================
-// ★★★ 設定エリア (接続問題を修正済み) ★★★
-// ===================================================
 const firebaseConfig = {
   apiKey: "AIzaSyCyZwqTMZ6GUccNDDB9avOpBxIbRxMWJtw",
   authDomain: "obs-ticker-system.firebaseapp.com",
-  databaseURL: "https://obs-ticker-system-default-rtdb.asia-southeast1.firebasedatabase.app", // ★★★ タイプミスを修正しました ★★★
+  databaseURL: "https://obs-ticker-system-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "obs-ticker-system",
   storageBucket: "obs-ticker-system.appspot.com",
   messagingSenderId: "597498199333",
   appId: "1:597498199333:web:fa6382b92ec4b2e29b2ecc"
 };
-// スクロール速度 (ピクセル/秒)
+
 const SCROLL_SPEED_PPS = 120;
-// ===================================================
 
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
@@ -37,7 +33,6 @@ function startScrolling(text) {
     const wrapWidth = centerWrapDiv.offsetWidth;
     
     if (textWidth < wrapWidth) {
-        // 文字がエリアより短い場合はアニメーションしない
         textElement.style.transform = `translateX(0px)`;
         return;
     }

@@ -2,27 +2,113 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>情報ティッカー コントロールパネル</title>
+    <title>Ticker Display</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/line/fonts/line-seed/line-seed-jp.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'LINE Seed JP', sans-serif;
+            background-color: rgba(0, 0, 0, 0);
+            overflow: hidden;
+        }
+        .ticker-container {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            width: calc(100% - 80px);
+            height: 75px;
+            display: flex;
+            align-items: stretch;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+            overflow: hidden; 
+        }
+        .header-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(90deg, #87CEFA 0%, #B2B2E8 100%);
+            color: white;
+            font-size: 39px;
+            font-weight: 900;
+            padding: 0 25px;
+            flex-shrink: 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        .center-wrap {
+            flex-grow: 1;
+            background-color: #F8F9FA;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .right-clock {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(90deg, #B2B2E8 0%, #FFB6C1 100%);
+            color: white;
+            font-weight: 700;
+            width: 220px;
+            flex-shrink: 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        .live-label {
+            font-size: 49px;
+            font-weight: 700;
+            display: flex;
+        }
+        .clock-time {
+            font-size: 49px;
+            font-weight: 700;
+        }
+        .scrolling-text {
+            color: #444444;
+            font-size: 40px;
+            font-weight: 700;
+            padding-left: 30px;
+        }
+        .live-animating span {
+            display: inline-block;
+            animation: letter-bounce 1.6s ease-in-out infinite;
+        }
+        .live-animating span:nth-child(1) { animation-delay: 0s; }
+        .live-animating span:nth-child(2) { animation-delay: 0.1s; }
+        .live-animating span:nth-child(3) { animation-delay: 0.2s; }
+        .live-animating span:nth-child(4) { animation-delay: 0.3s; }
+
+        @keyframes letter-bounce {
+            0%, 40%, 100% { transform: translateY(0); }
+            20% { transform: translateY(-10px); }
+        }
+
+        .bounce-in-animation {
+            animation: bounce-in 0.6s ease;
+        }
+
+        @keyframes bounce-in {
+            0% { transform: scale(0.5); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            80% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>情報ティッカー コントロールパネル</h1>
-        <div class="form-group">
-            <label for="header">ヘッダー（デフォルトを「日経平均株価」）</label>
-            <input type="text" id="header" placeholder="日経平均株価">
+    <div class="ticker-container">
+        <div class="header-label" id="header-label">...</div>
+        <div class="center-wrap" id="center-wrap">
         </div>
-        <div class="form-group">
-            <label for="scrollingText">中央の流し文字</label>
-            <textarea id="scrollingText" rows="10" placeholder="ここに流したい文字を入力してください。&#10;改行は半角スペース3つに変換されます。"></textarea>
+        <div class="right-clock" id="right-clock">
+            <div id="live-label" class="live-label">
+                <span>L</span><span>I</span><span>V</span><span>E</span>
+            </div>
+            <span id="clock" class="clock-time">00:00</span>
         </div>
-        <button id="updateButton">更新する</button>
-        <p id="status"></p>
     </div>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
-    <script src="control.js"></script>
+    <script src="display.js"></script>
 </body>
 </html>

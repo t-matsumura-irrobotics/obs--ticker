@@ -8,7 +8,7 @@ const firebaseConfig = {
   appId: "1:597498199333:web:fa6382b92ec4b2e29b2ecc"
 };
 
-const SCROLL_SPEED_PPS = 120;
+const SCROLL_SPEED_PPS = 144;
 
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();

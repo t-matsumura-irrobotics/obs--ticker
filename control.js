@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const database = firebase.database();
     const tickerDataRef = database.ref('tickerData');
 
-    const labelLeftInput = document.getElementById('labelLeft');
+    const headerInput = document.getElementById('header');
     const scrollingTextInput = document.getElementById('scrollingText');
     const updateButton = document.getElementById('updateButton');
     const statusP = document.getElementById('status');
@@ -21,20 +21,20 @@ document.addEventListener('DOMContentLoaded', () => {
     tickerDataRef.on('value', (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            labelLeftInput.value = data.labelLeft || '';
+            headerInput.value = data.header || '';
             scrollingTextInput.value = data.scrollingText ? data.scrollingText.replace(/   /g, '\n') : '';
         }
     });
 
     updateButton.addEventListener('click', () => {
-        const labelLeft = labelLeftInput.value;
+        const header = headerInput.value;
         const scrollingText = scrollingTextInput.value.replace(/\n/g, '   ');
 
         updateButton.disabled = true;
         updateButton.textContent = '更新中...';
 
         tickerDataRef.set({
-            labelLeft: labelLeft,
+            header: header,
             scrollingText: scrollingText,
             updatedAt: new Date().toISOString()
         }).then(() => {

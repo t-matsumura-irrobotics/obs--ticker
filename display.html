@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Ticker Display</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/line/fonts/line-seed/line-seed-jp.css">
     <style>
         body {
             margin: 0;
-            font-family: 'Noto Sans JP', sans-serif;
+            font-family: 'LINE Seed JP', sans-serif;
             background-color: rgba(0, 0, 0, 0);
             overflow: hidden;
         }
@@ -25,15 +23,15 @@
             box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
             overflow: hidden; 
         }
-        .left-label {
+        .header-label {
             display: flex;
             align-items: center;
             justify-content: center;
             background: linear-gradient(90deg, #87CEFA 0%, #B2B2E8 100%);
             color: white;
-            font-size: 30px;
+            font-size: 39px;
             font-weight: 900;
-            padding: 0 45px;
+            padding: 0 35px;
             flex-shrink: 0;
             text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
         }
@@ -58,12 +56,12 @@
             text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
         }
         .right-clock .live-label {
-            font-size: 18px;
-            font-weight: 500;
-            margin-right: 12px;
-            align-self: flex-start;
-            margin-top: 15px;
-            opacity: 0.9;
+            font-size: 38px;
+            font-weight: 700;
+        }
+        .right-clock .clock-time {
+            font-size: 38px;
+            font-weight: 700;
         }
         .scrolling-text {
             color: #1a1a1a;
@@ -71,15 +69,24 @@
             font-weight: 700;
             padding-left: 30px;
         }
+        .bounce-animation {
+            animation: bounce-in 0.6s ease;
+        }
+        @keyframes bounce-in {
+            0% { transform: scale(0.5); opacity: 0; }
+            60% { transform: scale(1.1); opacity: 1; }
+            80% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
     <div class="ticker-container">
-        <div class="left-label" id="left-label">...</div>
+        <div class="header-label" id="header-label">...</div>
         <div class="center-wrap" id="center-wrap">
         </div>
-        <div class="right-clock">
-            <span class="live-label">LIVE</span>
+        <div class="right-clock" id="right-clock">
+            <span id="live-label">LIVE</span>
             <span id="clock">00:00</span>
         </div>
     </div>

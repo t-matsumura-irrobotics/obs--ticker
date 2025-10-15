@@ -14,9 +14,10 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 const tickerDataRef = database.ref('tickerData');
 
-const leftLabelDiv = document.getElementById('left-label');
+const headerLabelDiv = document.getElementById('header-label');
 const centerWrapDiv = document.getElementById('center-wrap');
 const clockSpan = document.getElementById('clock');
+const liveLabel = document.getElementById('live-label');
 let currentAnimation = null;
 
 function startScrolling(text) {
@@ -52,10 +53,10 @@ function startScrolling(text) {
 tickerDataRef.on('value', (snapshot) => {
     const data = snapshot.val();
     if (data) {
-        leftLabelDiv.textContent = data.labelLeft || 'INFO';
+        headerLabelDiv.textContent = data.header || 'INFO';
         startScrolling(data.scrollingText || 'コントロールパネルから情報を更新してください...');
     } else {
-        leftLabelDiv.textContent = '待機中';
+        headerLabelDiv.textContent = '待機中';
         startScrolling('コントロールパネルから情報を更新してください...');
     }
 });
@@ -67,5 +68,30 @@ function updateClock() {
     clockSpan.textContent = `${hours}:${minutes}`;
 }
 
+function manageClockDisplay() {
+    // 1. Show Time for 20 seconds
+    liveLabel.style.display = 'none';
+    clockSpan.style.display = 'block';
+    
+    setTimeout(() => {
+        // 2. Show LIVE for 10 seconds
+        clockSpan.style.display = 'none';
+        liveLabel.style.display = 'block';
+        liveLabel.classList.add('bounce-animation');
+
+        setTimeout(() => {
+            // 3. Restart the cycle
+            liveLabel.classList.remove('bounce-animation');
+            manageClockDisplay();
+        }, 10000); // 10 seconds for LIVE
+    }, 20000); // 20 seconds for Time
+}
+
+// Keep updating the clock time every second in the background
 setInterval(updateClock, 1000);
-updateClock();
+
+// Start the initial display cycle
+document.addEventListener('DOMContentLoaded', () => {
+    updateClock();
+    manageClockDisplay();
+});

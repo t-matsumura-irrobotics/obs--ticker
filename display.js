@@ -53,10 +53,10 @@ function startScrolling(text) {
 tickerDataRef.on('value', (snapshot) => {
     const data = snapshot.val();
     if (data) {
-        headerLabelDiv.textContent = data.header || 'INFO';
+        headerLabelDiv.textContent = data.header || '日経平均株価';
         startScrolling(data.scrollingText || 'コントロールパネルから情報を更新してください...');
     } else {
-        headerLabelDiv.textContent = '待機中';
+        headerLabelDiv.textContent = '日経平均株価';
         startScrolling('コントロールパネルから情報を更新してください...');
     }
 });
@@ -69,28 +69,25 @@ function updateClock() {
 }
 
 function manageClockDisplay() {
-    // 1. Show Time for 20 seconds
     liveLabel.style.display = 'none';
+    liveLabel.classList.remove('live-animating');
+    clockSpan.classList.add('bounce-in-animation');
     clockSpan.style.display = 'block';
     
     setTimeout(() => {
-        // 2. Show LIVE for 10 seconds
         clockSpan.style.display = 'none';
-        liveLabel.style.display = 'block';
-        liveLabel.classList.add('bounce-animation');
+        clockSpan.classList.remove('bounce-in-animation');
+        liveLabel.style.display = 'flex';
+        liveLabel.classList.add('live-animating');
 
         setTimeout(() => {
-            // 3. Restart the cycle
-            liveLabel.classList.remove('bounce-animation');
             manageClockDisplay();
-        }, 10000); // 10 seconds for LIVE
-    }, 20000); // 20 seconds for Time
+        }, 10000); 
+    }, 20000);
 }
 
-// Keep updating the clock time every second in the background
 setInterval(updateClock, 1000);
 
-// Start the initial display cycle
 document.addEventListener('DOMContentLoaded', () => {
     updateClock();
     manageClockDisplay();

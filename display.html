@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Stock Ticker Display</title>
+    <title>Scrolling Ticker Display</title>
     <!-- LINE Seed JPフォントを読み込み -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/line/fonts/line-seed/line-seed-jp.css">
     <style>
@@ -17,7 +17,7 @@
             bottom: 50px;
             left: 0;
             width: 1920px;
-            height: 65px;
+            height: 130px; /* ★全体の太さを2倍に */
             display: flex;
             align-items: stretch;
             font-weight: 700;
@@ -28,17 +28,16 @@
             justify-content: center;
             background-color: #1a71d4;
             color: white;
-            font-size: 32px;
-            padding: 0 40px;
+            font-size: 60px; /* ★フォントサイズ調整 */
+            padding: 0 80px;
             clip-path: polygon(0 0, 100% 0, 93% 100%, 0% 100%);
-            flex-shrink: 0; /* 縮まないように設定 */
+            flex-shrink: 0;
         }
         .ticker-wrap {
             flex-grow: 1;
             background-color: #f0f2f5;
-            display: flex;
+            display: flex; /* アニメーション制御のためflexを使用 */
             align-items: center;
-            padding: 0 30px;
             overflow: hidden;
             white-space: nowrap;
         }
@@ -48,53 +47,34 @@
             justify-content: center;
             background-color: #1a71d4;
             color: white;
-            font-size: 32px;
-            padding: 0 30px 0 50px;
+            font-size: 60px; /* ★フォントサイズ調整 */
+            padding: 0 60px 0 100px;
             clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
-            flex-shrink: 0; /* 縮まないように設定 */
+            flex-shrink: 0;
         }
         .live-clock .live-label {
-            font-size: 18px;
+            font-size: 32px; /* ★フォントサイズ調整 */
             font-weight: 400;
-            margin-right: 10px;
+            margin-right: 20px;
             align-self: flex-start;
-            margin-top: 10px;
+            margin-top: 20px;
         }
-
-        /* 株式情報アイテム */
-        .stock-item {
-            display: inline-flex;
-            align-items: baseline; /* テキストのベースラインを揃える */
+        
+        /* 流れる文字のコンテナ */
+        .scrolling-text {
             color: #222;
-            margin-right: 45px;
-            font-size: 32px;
-        }
-        .stock-name {
-            font-weight: 500;
-        }
-        .stock-code {
-            font-size: 24px;
-            margin-left: 8px;
-            color: #555;
-            font-weight: 400;
-        }
-        .stock-price {
-            font-size: 36px;
-            margin-left: 20px;
+            font-size: 72px; /* ★フォントサイズ調整 */
             font-weight: 700;
+            /* JavaScriptによってアニメーションが適用される */
         }
-        .stock-change {
-            margin-left: 15px;
-            font-weight: 700;
-        }
-        .change-plus { color: #e63946; } /* 上昇は赤 */
-        .change-minus { color: #007f3f; } /* 下落は緑 */
     </style>
 </head>
 <body>
     <div class="ticker-container">
         <div class="ticker-label" id="ticker-label">...</div>
-        <div class="ticker-wrap" id="ticker-wrap"></div>
+        <div class="ticker-wrap" id="ticker-wrap">
+            <!-- JavaScriptがここに流れる文字を挿入します -->
+        </div>
         <div class="live-clock">
             <span class="live-label">LIVE</span>
             <span id="clock">00:00</span>
